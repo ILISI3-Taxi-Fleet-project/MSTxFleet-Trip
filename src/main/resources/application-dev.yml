@@ -1,8 +1,14 @@
-server:
-  port: 8082
 spring:
   application:
     name: MSTxFleet-Trip
   cloud:
     discovery:
-      enabled: false
+      enabled: true
+
+server:
+  port: 0
+
+service:
+  postgis:
+    name: MSTXFLEET-DBS-POSTGIS
+    url: localhost:8888/MSTXFLEET-DBS-POSTGIS
