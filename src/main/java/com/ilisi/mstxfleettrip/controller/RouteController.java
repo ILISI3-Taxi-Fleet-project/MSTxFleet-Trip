@@ -10,6 +10,9 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 
 @Controller
 @RequiredArgsConstructor
@@ -19,7 +22,7 @@ public class RouteController {
 
     @MessageMapping("/route")
     @SendTo("/topic/route")
-    public String route(@Payload TripDto tripDto) {
+    public Map<String,String> route(@Payload TripDto tripDto) {
         log.info("Received message: " + tripDto.toString());
         String path = postgisClientService.findPath(
                 tripDto.getStartLatitude(),
@@ -28,6 +31,8 @@ public class RouteController {
                 tripDto.getEndLongitude()
         );
         log.info("Path: " + path);
-        return path;
+        Map<String,String> map = new HashMap<>();
+        map.put("path", path);
+        return map;
     }
 }
