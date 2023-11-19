@@ -30,9 +30,8 @@ public class RouteController {
                 tripDto.getEndLatitude(),
                 tripDto.getEndLongitude()
         );
+        path = path.substring(1, path.length() - 1);
         log.info("Path: " + path);
-        Map<String,String> map = new HashMap<>();
-        map.put("path", path);
-        return map;
+        return Map.of("path", path);
     }
 }
