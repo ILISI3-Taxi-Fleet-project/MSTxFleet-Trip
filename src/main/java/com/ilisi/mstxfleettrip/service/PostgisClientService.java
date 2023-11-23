@@ -11,4 +11,8 @@ public interface PostgisClientService {
                     @RequestParam("startLongitude") double startLongitude,
                     @RequestParam("endLatitude") double endLatitude,
                     @RequestParam("endLongitude") double endLongitude);
+
+    @GetMapping("/userLocations/search/findNearbyOnlineUsersByUserId")
+    String findNearbyOnlineUsersByUserId(@RequestParam("userId") String userId,
+                                         @RequestParam("radiusInMeters") double radiusInMeters);
 }
