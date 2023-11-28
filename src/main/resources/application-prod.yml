@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: MSTxFleet-Trip
+  cloud:
+    discovery:
+      enabled: false
+
+server:
+  port: 0
+
+service:
+  postgis:
+    name: MSTXFLEET-DBS-POSTGIS
+    url: mstxfleet-api-gateway:8888/MSTXFLEET-DBS-POSTGIS
