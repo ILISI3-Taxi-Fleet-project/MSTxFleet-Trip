@@ -8,7 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 @ToString
-public class TripDto {
+public class PathDto {
     private double startLatitude;
     private double startLongitude;
     private double endLatitude;
