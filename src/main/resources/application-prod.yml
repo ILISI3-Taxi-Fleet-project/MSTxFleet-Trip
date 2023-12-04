@@ -10,3 +10,6 @@ service:
   postgis:
     name: MSTXFLEET-DBS-POSTGIS
     url: mstxfleet-api-gateway:8888/MSTXFLEET-DBS-POSTGIS
+  redis:
+    name: MSTXFLEET-DBS-REDIS
+    url: mstxfleet-api-gateway:8888/MSTXFLEET-DBS-REDIS

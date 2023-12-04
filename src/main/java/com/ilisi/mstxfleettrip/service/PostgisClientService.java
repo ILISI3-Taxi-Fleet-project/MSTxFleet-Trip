@@ -12,6 +12,10 @@ public interface PostgisClientService {
                     @RequestParam("endLatitude") double endLatitude,
                     @RequestParam("endLongitude") double endLongitude);
 
+    @GetMapping("/userLocations/search/findPathBetweenTwoUsers")
+    String findPath(@RequestParam("startUserId") String startUserId,
+                    @RequestParam("endUserId") String endUserId);
+
     @GetMapping("/userLocations/search/findNearbyOnlineUsersByUserId")
     String findNearbyOnlineUsersByUserId(@RequestParam("userId") String userId,
                                          @RequestParam("radiusInMeters") double radiusInMeters);
