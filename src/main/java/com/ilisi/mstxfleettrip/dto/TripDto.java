@@ -3,14 +3,26 @@ package com.ilisi.mstxfleettrip.dto;
 
 import lombok.*;
 
+import java.time.Instant;
+
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
+@AllArgsConstructor @NoArgsConstructor
 @Builder
 @ToString
 public class TripDto {
-    private double startLatitude;
-    private double startLongitude;
-    private double endLatitude;
-    private double endLongitude;
+    private String tripId;
+
+    private String status;
+
+    private Location destination;
+
+    private Location startLocation;
+
+    private Instant createdAt;
+
+    private Instant updatedAt;
+
+    private String passengerId;
+
+    private String driverId;
 }

@@ -4,6 +4,11 @@ spring:
   cloud:
     discovery:
       enabled: true
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 
 server:
   port: 0
@@ -12,3 +17,7 @@ service:
   postgis:
     name: MSTXFLEET-DBS-POSTGIS
     url: localhost:8888/MSTXFLEET-DBS-POSTGIS
+
+  redis:
+    name: MSTXFLEET-DBS-REDIS
+    url: localhost:8888/MSTXFLEET-DBS-REDIS
