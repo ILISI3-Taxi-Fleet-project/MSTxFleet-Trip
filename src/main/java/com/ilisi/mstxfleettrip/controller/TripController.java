@@ -88,8 +88,14 @@ public class TripController {
         String path = postgisClientService.findPath(passengerId, driverId);
         path = path.substring(1, path.length() - 1);
         log.info("Path: " + path);
-        simpMessagingTemplate.convertAndSend("/topic/trip.path/" + driverId, Map.of("path", path));
-        simpMessagingTemplate.convertAndSend("/topic/trip.path/" + passengerId, Map.of("path", path));
+        simpMessagingTemplate.convertAndSend("/topic/trip.path/" + driverId, Map.of(
+                "path", path,
+                "location", redisClientService.getUserLocation(passengerId).getLocation()
+        ));
+        simpMessagingTemplate.convertAndSend("/topic/trip.path/" + passengerId, Map.of(
+                "path", path,
+                "location", redisClientService.getUserLocation(driverId).getLocation()
+        ));
     }
 
     @MessageMapping("/trip.nearbyUsers")
