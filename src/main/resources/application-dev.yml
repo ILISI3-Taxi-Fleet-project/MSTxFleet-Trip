@@ -3,7 +3,7 @@ spring:
     name: MSTxFleet-Trip
   cloud:
     discovery:
-      enabled: false
+      enabled: true
   kafka:
     bootstrap-servers: localhost:9092
     producer:
@@ -11,7 +11,7 @@ spring:
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 
 server:
-  port: 8081
+  port: 0
 
 service:
   postgis:
