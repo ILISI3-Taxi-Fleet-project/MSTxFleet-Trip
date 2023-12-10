@@ -1,8 +1,8 @@
 package com.ilisi.mstxfleettrip.controller;
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ilisi.mstxfleettrip.dto.PathDto;
+import com.ilisi.mstxfleettrip.dto.TripDto;
 import com.ilisi.mstxfleettrip.service.PostgisClientService;
 import com.ilisi.mstxfleettrip.service.RedisClientService;
 import lombok.RequiredArgsConstructor;
@@ -15,10 +15,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 
 @Controller
@@ -26,11 +23,12 @@ import java.util.UUID;
 @Slf4j
 public class TripController {
 
+    private static final double RADIUS_IN_METERS = 1000;
     private final PostgisClientService postgisClientService;
     private final RedisClientService redisClientService;
     private final SimpMessagingTemplate simpMessagingTemplate;
-    private final KafkaTemplate<String, Map<String,Object>> kafkaTemplate;
-    private static final double RADIUS_IN_METERS = 1000;
+    private final KafkaTemplate<String, Map<String, Object>> kafkaTemplate;
+
     @MessageMapping("/trip.initialize")
     public void route(@Payload PathDto pathDto, SimpMessageHeaderAccessor headerAccessor) {
         String passengerId = headerAccessor.getSessionAttributes().get("userId").toString();
@@ -56,7 +54,7 @@ public class TripController {
         );
         path = path.substring(1, path.length() - 1);
         log.info("Path: " + path);
-        simpMessagingTemplate.convertAndSend("/topic/trip.path/"+passengerId, Map.of("path", path));
+        simpMessagingTemplate.convertAndSend("/topic/trip.path/" + passengerId, Map.of("path", path));
     }
 
     @MessageMapping("/trip.accept")
@@ -65,19 +63,18 @@ public class TripController {
         log.info("Received message: " + passengerDto.toString());
 
         //set driver od and passenger id
-        String driverId = headerAccessor.getSessionAttributes().get("userId").toString();
+        String driverId = Objects.requireNonNull(headerAccessor.getSessionAttributes()).get("userId").toString();
         String passengerId = passengerDto.get("passengerId").toString();
 
         //set passenger id in list in the session of the driver
         List<String> passengers = (List<String>) headerAccessor.getSessionAttributes().get("passengers");
-        if(passengers == null)
+        if (passengers == null)
             passengers = new ArrayList<>();
 
         passengers.add(passengerId);
         headerAccessor.getSessionAttributes().put("passengers", passengers);
-        //
 
-        /*log.info("passenger message: " + passengerId);
+        log.info("passenger message: " + passengerId);
         log.info("driver message: " + driverId);
         TripDto tripDto = redisClientService.getTrip(passengerId);
         kafkaTemplate.send("trip",
@@ -91,8 +88,14 @@ public class TripController {
         String path = postgisClientService.findPath(passengerId, driverId);
         path = path.substring(1, path.length() - 1);
         log.info("Path: " + path);
-        simpMessagingTemplate.convertAndSend("/topic/trip.path/"+driverId, Map.of("path", path));
-        simpMessagingTemplate.convertAndSend("/topic/trip.path/"+passengerId, Map.of("path", path));*/
+        simpMessagingTemplate.convertAndSend("/topic/trip.path/" + driverId, Map.of(
+                "path", path,
+                "location", redisClientService.getUserLocation(passengerId).getLocation()
+        ));
+        simpMessagingTemplate.convertAndSend("/topic/trip.path/" + passengerId, Map.of(
+                "path", path,
+                "location", redisClientService.getUserLocation(driverId).getLocation()
+        ));
     }
 
     @MessageMapping("/trip.nearbyUsers")
@@ -100,8 +103,8 @@ public class TripController {
         String userId = headerAccessor.getSessionAttributes().get("userId").toString();
         log.info("Received message: " + userId);
 
-        String nearbyUsers= postgisClientService.findNearbyOnlineUsersByUserId(userId, RADIUS_IN_METERS);
+        String nearbyUsers = postgisClientService.findNearbyOnlineUsersByUserId(userId, RADIUS_IN_METERS);
         log.info("Nearby users: " + nearbyUsers);
-        simpMessagingTemplate.convertAndSend("/topic/trip.nearbyUsers/"+userId, Map.of("nearbyUsers", nearbyUsers));
+        simpMessagingTemplate.convertAndSend("/topic/trip.nearbyUsers/" + userId, Map.of("nearbyUsers", nearbyUsers));
     }
 }
