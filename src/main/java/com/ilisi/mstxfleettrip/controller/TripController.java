@@ -58,8 +58,9 @@ public class TripController {
     }
 
     @MessageMapping("/trip.accept")
-    public void acceptTrip(@Payload String passengerId, SimpMessageHeaderAccessor headerAccessor) {
+    public void acceptTrip(@Payload Map<String,Object> passenger, SimpMessageHeaderAccessor headerAccessor) {
         String driverId = headerAccessor.getSessionAttributes().get("userId").toString();
+        String passengerId = passenger.get("passengerId").toString();
         log.info("passenger message: " + passengerId);
         log.info("driver message: " + driverId);
         TripDto tripDto = redisClientService.getTrip(passengerId);

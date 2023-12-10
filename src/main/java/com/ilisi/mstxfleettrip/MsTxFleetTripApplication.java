@@ -12,4 +12,6 @@ public class MsTxFleetTripApplication {
         SpringApplication.run(MsTxFleetTripApplication.class, args);
     }
 
+
+
 }
