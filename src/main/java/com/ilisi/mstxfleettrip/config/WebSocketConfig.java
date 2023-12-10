@@ -10,12 +10,14 @@ import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.messaging.support.MessageHeaderAccessor;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
 @Configuration
 @EnableWebSocketMessageBroker
+@EnableScheduling
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override

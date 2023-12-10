@@ -1,8 +1,8 @@
 package com.ilisi.mstxfleettrip.controller;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ilisi.mstxfleettrip.dto.PathDto;
-import com.ilisi.mstxfleettrip.dto.TripDto;
 import com.ilisi.mstxfleettrip.service.PostgisClientService;
 import com.ilisi.mstxfleettrip.service.RedisClientService;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +15,8 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -58,10 +60,24 @@ public class TripController {
     }
 
     @MessageMapping("/trip.accept")
-    public void acceptTrip(@Payload Map<String,Object> passenger, SimpMessageHeaderAccessor headerAccessor) {
+    public void acceptTrip(@Payload Map<String, Object> passengerDto, SimpMessageHeaderAccessor headerAccessor) {
+        //log the recieved message
+        log.info("Received message: " + passengerDto.toString());
+
+        //set driver od and passenger id
         String driverId = headerAccessor.getSessionAttributes().get("userId").toString();
-        String passengerId = passenger.get("passengerId").toString();
-        log.info("passenger message: " + passengerId);
+        String passengerId = passengerDto.get("passengerId").toString();
+
+        //set passenger id in list in the session of the driver
+        List<String> passengers = (List<String>) headerAccessor.getSessionAttributes().get("passengers");
+        if(passengers == null)
+            passengers = new ArrayList<>();
+
+        passengers.add(passengerId);
+        headerAccessor.getSessionAttributes().put("passengers", passengers);
+        //
+
+        /*log.info("passenger message: " + passengerId);
         log.info("driver message: " + driverId);
         TripDto tripDto = redisClientService.getTrip(passengerId);
         kafkaTemplate.send("trip",
@@ -76,7 +92,7 @@ public class TripController {
         path = path.substring(1, path.length() - 1);
         log.info("Path: " + path);
         simpMessagingTemplate.convertAndSend("/topic/trip.path/"+driverId, Map.of("path", path));
-        simpMessagingTemplate.convertAndSend("/topic/trip.path/"+passengerId, Map.of("path", path));
+        simpMessagingTemplate.convertAndSend("/topic/trip.path/"+passengerId, Map.of("path", path));*/
     }
 
     @MessageMapping("/trip.nearbyUsers")
