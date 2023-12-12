@@ -22,7 +22,7 @@ public interface RedisClientService {
     @GetMapping("/userLocations/getMultiLocations")
     List<UserLocationDto> getPassengerLocations(@RequestParam("passengerIds") Collection<String> passengerIds);
 
-    @GetMapping("/userLocation/search/findByUserId")
-    UserLocationDto getUserLocation(@RequestParam("userId") String userId);
+    @GetMapping("/userLocation/{userId}")
+    UserLocationDto getUserLocation(@PathVariable("userId") String userId);
 
 }
