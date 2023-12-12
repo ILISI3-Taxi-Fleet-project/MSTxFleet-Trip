@@ -54,7 +54,7 @@ public class TripController {
         );
         path = path.substring(1, path.length() - 1);
         log.info("Path: " + path);
-        simpMessagingTemplate.convertAndSend("/topic/trip.path/" + passengerId, Map.of("path", path));
+        simpMessagingTemplate.convertAndSend("/topic/trip.pathDestination/" + passengerId, Map.of("path", path));
     }
 
     @MessageMapping("/trip.accept")
